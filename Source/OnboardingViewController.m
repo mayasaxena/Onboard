@@ -133,7 +133,7 @@ static NSString * const kSkipButtonText = @"Skip";
         return nil;
     }
     
-    [rightButton addTarget:self action:@selector(handleSkipButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [rightButton addTarget:self action:@selector(handleNextButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
     self.currentLeftButton = leftButton;
     self.currentRightButton = rightButton;
@@ -359,7 +359,7 @@ static NSString * const kSkipButtonText = @"Skip";
 
 #pragma mark - Skipping and Next
 
-- (void)handleSkipButtonPressed {
+- (void)handleNextButtonPressed {
     [self moveNextPage];
 }
 
@@ -417,18 +417,6 @@ static NSString * const kSkipButtonText = @"Skip";
             [self.view addSubview:self.currentRightButton];
         }
     }
-    
-    UIViewController *nextViewController = pendingViewControllers.firstObject;
-    NSInteger newIndex = [self.viewControllers indexOfObject:nextViewController];
-    [self.pageControl setCurrentPage:newIndex];
-
-}
-
-- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    // if we haven't completed animating yet, we don't want to do anything because it could be cancelled
-
-//        UIViewController *viewController = pageViewController.viewControllers.firstObject;
-//        [self.pageControl setCurrentPage:newIndex];
 }
 
 - (void)moveNextPage {
@@ -488,30 +476,13 @@ static NSString * const kSkipButtonText = @"Skip";
             self.pageControl.alpha = percentComplete;
         }
     }
+    
+    if (percentComplete >= .5) {
+        [self.pageControl setCurrentPage:[self.viewControllers indexOfObject:self.upcomingPage]];
+    } else {
+        [self.pageControl setCurrentPage:[self.viewControllers indexOfObject:self.currentPage]];
+    }
 
-//    // fade the skip button to and from the last page
-//    if (self.shouldChangeButtonsOnLastPage) {
-//        if (transitioningToLastPage) {
-//            [self.currentLeftButton removeFromSuperview];
-//            self.currentLeftButton = self.lastPageLeftButton;
-//            [self.view addSubview:self.currentLeftButton];
-//
-//            [self.currentRightButton removeFromSuperview];
-//            self.currentRightButton = self.lastPageRightButton;
-//            [self.view addSubview:self.currentRightButton];
-//        }
-//
-//        else if (transitioningFromLastPage) {
-//            [self.currentLeftButton removeFromSuperview];
-//            self.currentLeftButton = self.leftButton;
-//            [self.view addSubview:self.currentLeftButton];
-//            
-//            [self.currentRightButton removeFromSuperview];
-//            self.currentRightButton = self.rightButton;
-//            [self.view addSubview:self.currentRightButton];
-//
-//        }
-//    }
 }
 
 
