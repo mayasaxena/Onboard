@@ -99,7 +99,9 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     self.iconHeight = image ? image.size.height : kDefaultImageViewSize;
 
     // Title label
-    self.titleLabel = [UILabel new];
+    if (!self.titleLabel) {
+        self.titleLabel = [UILabel new];
+    }
     self.titleLabel.accessibilityIdentifier = kOnboardMainTextAccessibilityIdentifier;
     self.titleLabel.text = title;
     self.titleLabel.textColor = DEFAULT_TEXT_COLOR;
@@ -108,7 +110,9 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
 
     // Body label
-    self.bodyLabel = [UILabel new];
+    if (!self.bodyLabel) {
+        self.bodyLabel = [UILabel new];
+    }
     self.bodyLabel.accessibilityIdentifier = kOnboardSubTextAccessibilityIdentifier;
     self.bodyLabel.text = body;
     self.bodyLabel.textColor = DEFAULT_TEXT_COLOR;

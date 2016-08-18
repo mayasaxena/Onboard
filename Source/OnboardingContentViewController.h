@@ -46,13 +46,13 @@ typedef void (^action_callback)(OnboardingViewController *onboardController);
 /**
  * @brief The title label.
  */
-@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 
 
 /**
  * @brief The body label.
  */
-@property (nonatomic, strong) UILabel *bodyLabel;
+@property (nonatomic, strong) IBOutlet UILabel *bodyLabel;
 
 
 /**
