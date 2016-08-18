@@ -12,8 +12,8 @@
 @import Accelerate;
 
 static CGFloat const kPageControlHeight = 35;
-static CGFloat const kSkipButtonWidth = 100;
-static CGFloat const kSkipButtonHeight = 44;
+static CGFloat const kPageControlButtonWidth = 100;
+static CGFloat const kPageControlButtonHeight = 44;
 static CGFloat const kBackgroundMaskAlpha = 0.6;
 static CGFloat const kDefaultBlurRadius = 20;
 static CGFloat const kDefaultSaturationDeltaFactor = 1.8;
@@ -30,6 +30,9 @@ static NSString * const kSkipButtonText = @"Skip";
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) NSURL *videoURL;
 
+@property (nonatomic, strong) UIButton *currentLeftButton;
+@property (nonatomic, strong) UIButton *currentRightButton;
+
 @end
 
 
@@ -43,20 +46,110 @@ static NSString * const kSkipButtonText = @"Skip";
 
 + (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage contents:(NSArray *)contents {
     return [[self alloc] initWithBackgroundImage:backgroundImage contents:contents];
- }
+}
 
 - (instancetype)initWithBackgroundImage:(UIImage *)backgroundImage contents:(NSArray *)contents {
     self = [self initWithContents:contents];
-
+    
     if (!self) {
         return nil;
     }
-
+    
     self.backgroundImage = backgroundImage;
     
     return self;
 }
 
+#pragma mark - Initializing with custom buttons
+
++ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
+                             leftButton:(UIButton *)leftButton
+                            rightButton:(UIButton *)rightButton
+                     lastPageLeftButton:(UIButton *)lastPageLeftButton
+                    lastPageRightButton:(UIButton *)lastPageRightButton
+                               contents:(NSArray *)contents {
+    
+    return [[self alloc] initWithBackgroundImage:backgroundImage
+                                      leftButton:leftButton
+                                     rightButton:rightButton
+                              lastPageLeftButton:lastPageLeftButton
+                             lastPageRightButton:lastPageRightButton
+                                        contents:contents];
+}
+
+- (instancetype)initWithBackgroundImage:(UIImage *)backgroundImage
+                             leftButton:(UIButton *)leftButton
+                            rightButton:(UIButton *)rightButton
+                     lastPageLeftButton:(UIButton *)lastPageLeftButton
+                    lastPageRightButton:(UIButton *)lastPageRightButton
+                               contents:(NSArray *)contents {
+    
+    self = [self initWithContents:contents];
+    
+    if (!self) {
+        return nil;
+    }
+    
+    
+    if (leftButton || rightButton) {
+        self.currentLeftButton = leftButton;
+        self.currentRightButton = rightButton;
+        self.shouldChangeButtonsOnLastPage = lastPageLeftButton || lastPageRightButton;
+    }
+    
+    [rightButton addTarget:self action:@selector(handleSkipButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.backgroundImage = backgroundImage;
+    self.leftButton = leftButton;
+    self.rightButton = rightButton;
+    self.lastPageLeftButton = lastPageLeftButton;
+    self.lastPageRightButton = lastPageRightButton;
+    
+    return self;
+}
+
++ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
+                                skipButton:(UIButton *)leftButton
+                                nextButton:(UIButton *)rightButton
+                                doneButton:(UIButton *)lastPageRightButton
+                                  contents:(NSArray *)contents {
+    
+    
+    return [[self alloc] initWithBackgroundImage:backgroundImage
+                                      skipButton:leftButton
+                                      nextButton:rightButton
+                                      doneButton:lastPageRightButton
+                                        contents:contents];
+}
+
+- (instancetype)initWithBackgroundImage:(UIImage *)backgroundImage
+                             skipButton:(UIButton *)leftButton
+                             nextButton:(UIButton *)rightButton
+                             doneButton:(UIButton *)lastPageRightButton
+                               contents:(NSArray *)contents {
+    
+    self = [self initWithContents:contents];
+    
+    if (!self) {
+        return nil;
+    }
+    
+    [rightButton addTarget:self action:@selector(handleSkipButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.currentLeftButton = leftButton;
+    self.currentRightButton = rightButton;
+    
+    self.shouldChangeButtonsOnLastPage = YES;
+    self.shouldFadeTransitions = YES;
+    
+    self.backgroundImage = backgroundImage;
+    self.leftButton = leftButton;
+    self.rightButton = rightButton;
+    self.lastPageLeftButton = nil;
+    self.lastPageRightButton = lastPageRightButton;
+    
+    
+    return self;
+}
 
 #pragma mark - Initializing with video files
 
@@ -94,22 +187,19 @@ static NSString * const kSkipButtonText = @"Skip";
     self.shouldBlurBackground = NO;
     self.shouldFadeTransitions = NO;
     self.fadePageControlOnLastPage = NO;
-    self.fadeSkipButtonOnLastPage = NO;
+    self.shouldChangeButtonsOnLastPage = NO;
     self.swipingEnabled = YES;
-    
-    self.allowSkipping = NO;
-    self.skipHandler = ^{};
     
     // Create the initial exposed components so they can be customized
     self.pageControl = [UIPageControl new];
     self.pageControl.numberOfPages = self.viewControllers.count;
     self.pageControl.userInteractionEnabled = NO;
-
-    self.skipButton = [UIButton new];
-    [self.skipButton setTitle:kSkipButtonText forState:UIControlStateNormal];
-    [self.skipButton addTarget:self action:@selector(handleSkipButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    self.skipButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     
+    self.leftButton = nil;
+    self.rightButton = nil;
+    self.lastPageLeftButton = nil;
+    self.lastPageRightButton = nil;
+
     return self;
 }
 
@@ -147,7 +237,22 @@ static NSString * const kSkipButtonText = @"Skip";
 
     self.pageVC.view.frame = self.view.frame;
     self.moviePlayerController.view.frame = self.view.frame;
-    self.skipButton.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - kSkipButtonWidth, CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
+    if (self.currentLeftButton) {
+        
+        self.currentLeftButton.frame = CGRectMake(CGRectGetMinX(self.view.frame),
+                                           CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kPageControlButtonHeight,
+                                           kPageControlButtonWidth,
+                                           kPageControlButtonHeight);
+    }
+    
+    if (self.currentRightButton) {
+        
+        self.currentRightButton.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - kPageControlButtonWidth,
+                                           CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kPageControlButtonHeight,
+                                           kPageControlButtonWidth,
+                                           kPageControlButtonHeight);
+    }
+    
     self.pageControl.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kPageControlHeight, self.view.frame.size.width, kPageControlHeight);
 }
 
@@ -220,9 +325,12 @@ static NSString * const kSkipButtonText = @"Skip";
     // create the page control
     [self.view addSubview:self.pageControl];
     
-    // if we allow skipping, setup the skip button
-    if (self.allowSkipping) {
-        [self.view addSubview:self.skipButton];
+    if (self.currentLeftButton) {
+        [self.view addSubview:self.currentLeftButton];
+    }
+    
+    if (self.currentRightButton) {
+        [self.view addSubview:self.currentRightButton];
     }
     
     // if we want to fade the transitions, we need to tap into the underlying scrollview
@@ -249,12 +357,10 @@ static NSString * const kSkipButtonText = @"Skip";
 }
 
 
-#pragma mark - Skipping
+#pragma mark - Skipping and Next
 
 - (void)handleSkipButtonPressed {
-    if (self.skipHandler) {
-        self.skipHandler();
-    }
+    [self moveNextPage];
 }
 
 - (void)setUnderPageControlPadding:(CGFloat)underPageControlPadding {
@@ -290,17 +396,39 @@ static NSString * const kSkipButtonText = @"Skip";
 
 #pragma mark - Page view controller delegate
 
-- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    // if we haven't completed animating yet, we don't want to do anything because it could be cancelled
-    if (!completed) {
-        return;
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers {
+    if (self.shouldChangeButtonsOnLastPage) {
+        if ([pendingViewControllers containsObject:self.viewControllers.lastObject ]) {
+            [self.currentLeftButton removeFromSuperview];
+            self.currentLeftButton = self.lastPageLeftButton;
+            [self.view addSubview:self.currentLeftButton];
+
+            [self.currentRightButton removeFromSuperview];
+            self.currentRightButton = self.lastPageRightButton;
+            [self.view addSubview:self.currentRightButton];
+    
+        } else {
+            [self.currentLeftButton removeFromSuperview];
+            self.currentLeftButton = self.leftButton;
+            [self.view addSubview:self.currentLeftButton];
+            
+            [self.currentRightButton removeFromSuperview];
+            self.currentRightButton = self.rightButton;
+            [self.view addSubview:self.currentRightButton];
+        }
     }
     
-    // get the view controller we are moving towards, then get the index, then set it as the current page
-    // for the page control dots
-    UIViewController *viewController = [pageViewController.viewControllers lastObject];
-    NSInteger newIndex = [self.viewControllers indexOfObject:viewController];
+    UIViewController *nextViewController = pendingViewControllers.firstObject;
+    NSInteger newIndex = [self.viewControllers indexOfObject:nextViewController];
     [self.pageControl setCurrentPage:newIndex];
+
+}
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    // if we haven't completed animating yet, we don't want to do anything because it could be cancelled
+
+//        UIViewController *viewController = pageViewController.viewControllers.firstObject;
+//        [self.pageControl setCurrentPage:newIndex];
 }
 
 - (void)moveNextPage {
@@ -361,16 +489,29 @@ static NSString * const kSkipButtonText = @"Skip";
         }
     }
 
-    // fade the skip button to and from the last page
-    if (self.fadeSkipButtonOnLastPage) {
-        if (transitioningToLastPage) {
-            self.skipButton.alpha = percentCompleteInverse;
-        }
-
-        else if (transitioningFromLastPage) {
-            self.skipButton.alpha = percentComplete;
-        }
-    }
+//    // fade the skip button to and from the last page
+//    if (self.shouldChangeButtonsOnLastPage) {
+//        if (transitioningToLastPage) {
+//            [self.currentLeftButton removeFromSuperview];
+//            self.currentLeftButton = self.lastPageLeftButton;
+//            [self.view addSubview:self.currentLeftButton];
+//
+//            [self.currentRightButton removeFromSuperview];
+//            self.currentRightButton = self.lastPageRightButton;
+//            [self.view addSubview:self.currentRightButton];
+//        }
+//
+//        else if (transitioningFromLastPage) {
+//            [self.currentLeftButton removeFromSuperview];
+//            self.currentLeftButton = self.leftButton;
+//            [self.view addSubview:self.currentLeftButton];
+//            
+//            [self.currentRightButton removeFromSuperview];
+//            self.currentRightButton = self.rightButton;
+//            [self.view addSubview:self.currentRightButton];
+//
+//        }
+//    }
 }
 
 

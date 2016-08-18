@@ -51,19 +51,18 @@
 /**
  * @brief Determines whether or not the skip button will fade away on the last page. The default value of this property is NO.
  */
-@property (nonatomic) BOOL fadeSkipButtonOnLastPage;
-
+@property (nonatomic) BOOL shouldChangeButtonsOnLastPage;
 
 /**
- * @brief Determines whether or not the ship button will be shown. The default value of this property is NO.
+ * @brief A block that will be executed when the skip button is pressed.
  */
-@property (nonatomic) BOOL allowSkipping;
+@property (nonatomic, strong) dispatch_block_t leftButtonHandler;
 
 
 /**
  * @brief A block that will be executed when the skip button is pressed.
  */
-@property (nonatomic, strong) dispatch_block_t skipHandler;
+@property (nonatomic, strong) dispatch_block_t rightButtonHandler;
 
 
 /**
@@ -73,15 +72,33 @@
 
 
 /**
- * @brief Determines whether or not the page cotrol will be visible.
+ * @brief Determines whether or not the page control will be visible.
  */
 @property (nonatomic, strong) UIPageControl *pageControl;
 
 
 /**
- * @brief The skip button that allows users to skip onboarding anytime.
+ * @brief The button on the left of the page control
  */
-@property (nonatomic, strong) UIButton *skipButton;
+@property (nonatomic, strong) UIButton *leftButton;
+
+
+/**
+ * @brief The button on the right of the page control
+ */
+@property (nonatomic, strong) UIButton *rightButton;
+
+
+/**
+ * @brief The button on the left of the page control on the last page only
+ */
+@property (nonatomic, strong) UIButton *lastPageLeftButton;
+
+
+/**
+ * @brief The button on the right of the page control on the last page only
+ */
+@property (nonatomic, strong) UIButton *lastPageRightButton;
 
 
 /**
@@ -129,6 +146,41 @@
  */
 - (instancetype)initWithBackgroundVideoURL:(NSURL *)backgroundVideoURL contents:(NSArray *)contents;
 
+
+/**
+ * @brief Convenience class initializer for onboarding with a backround video and custom buttons
+ * @return An instance of OnboardingViewController with the provided background video, custom buttons and content view controllers.
+ */
+
++ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
+                                leftButton:(UIButton *)leftButton
+                               rightButton:(UIButton *)rightButton
+                        lastPageLeftButton:(UIButton *)lastPageLeftButton
+                       lastPageRightButton:(UIButton *)lastPageRightButton
+                                  contents:(NSArray *)contents;
+
+/**
+ * @brief Convenience class initializer for onboarding with a backround video and skip, next and done buttons
+ * @return An instance of OnboardingViewController with the provided background video, custom buttons and content view controllers.
+ */
+
++ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
+                                skipButton:(UIButton *)leftButton
+                                nextButton:(UIButton *)rightButton
+                                doneButton:(UIButton *)lastPageRightButton
+                                  contents:(NSArray *)contents;
+
+/**
+ * @brief Initializer for onboarding with a backround video and custom buttons.
+ * @return An instance of OnboardingViewController with the provided background video, custom buttons and content view controllers.
+ */
+
+- (instancetype)initWithBackgroundImage:(UIImage *)backgroundImage
+                             leftButton:(UIButton *)leftButton
+                            rightButton:(UIButton *)rightButton
+                     lastPageLeftButton:(UIButton *)lastPageLeftButton
+                    lastPageRightButton:(UIButton *)lastPageRightButton
+                               contents:(NSArray *)contents;
 
 /**
  * @brief Method to tell the onboarding view controller to automatically move to the next page.
