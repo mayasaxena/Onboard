@@ -203,11 +203,6 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     if (self.delegate) {
         [self.delegate setNextPage:self];
     }
-
-    // If we have a video URL, start playing
-    if (self.videoURL) {
-        [self.player play];
-    }
     
     // Call our view will appear block
     if (self.viewWillAppearBlock) {
@@ -226,6 +221,11 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     // we've appeared
     if (self.delegate) {
         [self.delegate setCurrentPage:self];
+    }
+    
+    // If we have a video URL, start playing
+    if (self.videoURL) {
+        [self.player play];
     }
     
     // Call our view did appear block
