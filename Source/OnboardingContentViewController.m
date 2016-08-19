@@ -161,25 +161,24 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     // Title label
     if (!self.titleLabel) {
         self.titleLabel = [UILabel new];
+        self.titleLabel.accessibilityIdentifier = kOnboardMainTextAccessibilityIdentifier;
+        self.titleLabel.textColor = DEFAULT_TEXT_COLOR;
+        self.titleLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultTitleFontSize];
+        self.titleLabel.numberOfLines = 0;
+        self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
-    
-    self.titleLabel.accessibilityIdentifier = kOnboardMainTextAccessibilityIdentifier;
     self.titleLabel.text = _titleText;
-    self.titleLabel.textColor = DEFAULT_TEXT_COLOR;
-    self.titleLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultTitleFontSize];
-    self.titleLabel.numberOfLines = 0;
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
     
     // Body label
     if (!self.bodyLabel) {
         self.bodyLabel = [UILabel new];
+        self.bodyLabel.accessibilityIdentifier = kOnboardSubTextAccessibilityIdentifier;
+        self.bodyLabel.textColor = DEFAULT_TEXT_COLOR;
+        self.bodyLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultBodyFontSize];
+        self.bodyLabel.numberOfLines = 0;
+        self.bodyLabel.textAlignment = NSTextAlignmentCenter;
     }
-    self.bodyLabel.accessibilityIdentifier = kOnboardSubTextAccessibilityIdentifier;
     self.bodyLabel.text = self.body;
-    self.bodyLabel.textColor = DEFAULT_TEXT_COLOR;
-    self.bodyLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultBodyFontSize];
-    self.bodyLabel.numberOfLines = 0;
-    self.bodyLabel.textAlignment = NSTextAlignmentCenter;
     
     // Action button
     self.actionButton = [UIButton new];
