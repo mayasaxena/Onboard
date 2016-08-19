@@ -188,10 +188,6 @@ static NSString * const kSkipButtonText = @"Skip";
     self.shouldChangeButtonsOnLastPage = NO;
     self.swipingEnabled = YES;
     
-    // Create the initial exposed components so they can be customized
-    self.pageControl = [UIPageControl new];
-    self.pageControl.numberOfPages = self.viewControllers.count;
-    self.pageControl.userInteractionEnabled = NO;
     
     self.leftButton = nil;
     self.rightButton = nil;
@@ -320,14 +316,21 @@ static NSString * const kSkipButtonText = @"Skip";
         [self.pageVC.view sendSubviewToBack:self.moviePlayerController.view];
     }
     
-    // create the page control
-    [self.view addSubview:self.pageControl];
+    if (!self.pageControl) {
+        // create the page control
+        self.pageControl = [UIPageControl new];
+        self.pageControl.userInteractionEnabled = NO;
+        [self.view addSubview:self.pageControl];
+    }
     
-    if (self.currentLeftButton) {
+    self.pageControl.numberOfPages = self.viewControllers.count;
+    
+    
+    if (self.currentLeftButton && ![self.view.subviews containsObject:self.currentLeftButton]) {
         [self.view addSubview:self.currentLeftButton];
     }
     
-    if (self.currentRightButton) {
+    if (self.currentRightButton && ![self.view.subviews containsObject:self.currentRightButton]) {
         [self.view addSubview:self.currentRightButton];
     }
     
@@ -343,7 +346,6 @@ static NSString * const kSkipButtonText = @"Skip";
     }
 }
 
-
 #pragma mark - App life cycle
 
 - (void)handleAppEnteredForeground {
@@ -353,7 +355,6 @@ static NSString * const kSkipButtonText = @"Skip";
         [self.player play];
     }
 }
-
 
 #pragma mark - Skipping and Next
 

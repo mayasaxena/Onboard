@@ -140,11 +140,22 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
 
         [self.view addSubview:self.moviePlayerController.view];
     }
-
-    [self.view addSubview:self.iconImageView];
-    [self.view addSubview:self.titleLabel];
-    [self.view addSubview:self.bodyLabel];
-    [self.view addSubview:self.actionButton];
+    
+    if (![self.view.subviews containsObject:self.iconImageView]) {
+        [self.view addSubview:self.iconImageView];
+    }
+    
+    if (![self.view.subviews containsObject:self.titleLabel]) {
+        [self.view addSubview:self.titleLabel];
+    }
+    
+    if (![self.view.subviews containsObject:self.bodyLabel]) {
+        [self.view addSubview:self.bodyLabel];
+    }
+    
+    if (![self.view.subviews containsObject:self.actionButton]) {
+        [self.view addSubview:self.actionButton];
+    }
 }
 
 - (void)setupView {

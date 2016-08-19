@@ -123,6 +123,11 @@
 
 
 /**
+ * @brief Switches out buttons if it is the last page
+ */
+- (void)updateButtons:(BOOL)isLastPage;
+
+/**
  * @brief Convenience class initializer for onboarding with a backround image.
  * @return An instance of OnboardingViewController with the provided background image and content view controllers.
  */
