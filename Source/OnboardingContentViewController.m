@@ -39,6 +39,11 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
 
 @property (nonatomic) BOOL wasPreviouslyVisible;
 
+@property (nonatomic, strong) NSString *titleText;
+@property (nonatomic, strong) NSString *body;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) NSString *buttonText;
+
 @end
 
 @implementation OnboardingContentViewController
@@ -93,45 +98,12 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
         return nil;
     }
 
-    // Icon image view
-    self.iconImageView = [[UIImageView alloc] initWithImage:image];
-    self.iconWidth = image ? image.size.width : kDefaultImageViewSize;
-    self.iconHeight = image ? image.size.height : kDefaultImageViewSize;
-
-    // Title label
-    if (!self.titleLabel) {
-        self.titleLabel = [UILabel new];
-    }
-    self.titleLabel.accessibilityIdentifier = kOnboardMainTextAccessibilityIdentifier;
-    self.titleLabel.text = title;
-    self.titleLabel.textColor = DEFAULT_TEXT_COLOR;
-    self.titleLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultTitleFontSize];
-    self.titleLabel.numberOfLines = 0;
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-
-    // Body label
-    if (!self.bodyLabel) {
-        self.bodyLabel = [UILabel new];
-    }
-    self.bodyLabel.accessibilityIdentifier = kOnboardSubTextAccessibilityIdentifier;
-    self.bodyLabel.text = body;
-    self.bodyLabel.textColor = DEFAULT_TEXT_COLOR;
-    self.bodyLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultBodyFontSize];
-    self.bodyLabel.numberOfLines = 0;
-    self.bodyLabel.textAlignment = NSTextAlignmentCenter;
-
-    // Action button
-    self.actionButton = [UIButton new];
-    self.actionButton.accessibilityIdentifier = kOnboardActionButtonAccessibilityIdentifier;
-    self.actionButton.titleLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultButtonFontSize];
-    [self.actionButton setTitle:buttonText forState:UIControlStateNormal];
-    [self.actionButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.actionButton addTarget:self action:@selector(handleButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-
-    self.buttonActionHandler = actionBlock ?: ^(OnboardingViewController *controller){};
-
-    // Movie player
+    self.titleText = title;
+    self.body = body;
+    self.image = image;
     self.videoURL = videoURL;
+    self.buttonText = buttonText;
+    self.buttonActionHandler = actionBlock ?: ^(OnboardingViewController *controller){};
 
     // Auto-navigation
     self.movesToNextViewController = NO;
@@ -161,6 +133,8 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppEnteredForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
 
     self.view.backgroundColor = [UIColor clearColor];
+    
+    [self setupView];
 
     // Add all our subviews
     if (self.videoURL) {
@@ -177,6 +151,44 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
     [self.view addSubview:self.titleLabel];
     [self.view addSubview:self.bodyLabel];
     [self.view addSubview:self.actionButton];
+}
+
+- (void)setupView {
+    // Icon image view
+    self.iconImageView = [[UIImageView alloc] initWithImage:self.image];
+    self.iconWidth = self.image ? self.image.size.width : kDefaultImageViewSize;
+    self.iconHeight = self.image ? self.image.size.height : kDefaultImageViewSize;
+    
+    // Title label
+    if (!self.titleLabel) {
+        self.titleLabel = [UILabel new];
+    }
+    
+    self.titleLabel.accessibilityIdentifier = kOnboardMainTextAccessibilityIdentifier;
+    self.titleLabel.text = _titleText;
+    self.titleLabel.textColor = DEFAULT_TEXT_COLOR;
+    self.titleLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultTitleFontSize];
+    self.titleLabel.numberOfLines = 0;
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    // Body label
+    if (!self.bodyLabel) {
+        self.bodyLabel = [UILabel new];
+    }
+    self.bodyLabel.accessibilityIdentifier = kOnboardSubTextAccessibilityIdentifier;
+    self.bodyLabel.text = self.body;
+    self.bodyLabel.textColor = DEFAULT_TEXT_COLOR;
+    self.bodyLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultBodyFontSize];
+    self.bodyLabel.numberOfLines = 0;
+    self.bodyLabel.textAlignment = NSTextAlignmentCenter;
+    
+    // Action button
+    self.actionButton = [UIButton new];
+    self.actionButton.accessibilityIdentifier = kOnboardActionButtonAccessibilityIdentifier;
+    self.actionButton.titleLabel.font = [UIFont fontWithName:kDefaultOnboardingFont size:kDefaultButtonFontSize];
+    [self.actionButton setTitle:self.buttonText forState:UIControlStateNormal];
+    [self.actionButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.actionButton addTarget:self action:@selector(handleButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
