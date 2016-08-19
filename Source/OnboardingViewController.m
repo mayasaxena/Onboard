@@ -97,7 +97,8 @@ static NSString * const kSkipButtonText = @"Skip";
         self.shouldChangeButtonsOnLastPage = lastPageLeftButton || lastPageRightButton;
     }
     
-    [rightButton addTarget:self action:@selector(handleSkipButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [rightButton addTarget:self action:@selector(handleNextButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    
     self.backgroundImage = backgroundImage;
     self.leftButton = leftButton;
     self.rightButton = rightButton;

@@ -38,27 +38,33 @@ typedef void (^action_callback)(OnboardingViewController *onboardController);
 
 
 /**
- * @brief The image view used to show the top icon.
+ * @brief The title text
  */
-@property (nonatomic, strong) UIImageView *iconImageView;
+@property (nonatomic, strong) NSString *titleText;
 
 
 /**
- * @brief The title label.
+ * @brief The body text.
  */
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) NSString *body;
 
 
 /**
- * @brief The body label.
+ * @brief The top icon image
  */
-@property (nonatomic, strong) IBOutlet UILabel *bodyLabel;
+@property (nonatomic, strong) UIImage *image;
 
 
 /**
- * @brief The button used to call the action handler if one was provided.
+ * @brief The text of the button used to call the action handler if one was provided.
  */
-@property (nonatomic, strong) UIButton *actionButton;
+@property (nonatomic, strong) NSString *buttonText;
+
+
+/**
+ * @brief The URL for the background video
+ */
+@property (nonatomic, strong) NSURL *videoURL;
 
 
 /**

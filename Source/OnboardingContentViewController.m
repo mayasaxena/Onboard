@@ -34,15 +34,14 @@ NSString * const kOnboardActionButtonAccessibilityIdentifier = @"OnboardActionBu
 
 @interface OnboardingContentViewController ()
 
+@property (nonatomic, strong) IBOutlet UIImageView *iconImageView;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *bodyLabel;
+@property (nonatomic, strong) IBOutlet UIButton *actionButton;
+
 @property (nonatomic, strong) AVPlayer *player;
-@property (nonatomic, strong) NSURL *videoURL;
 
 @property (nonatomic) BOOL wasPreviouslyVisible;
-
-@property (nonatomic, strong) NSString *titleText;
-@property (nonatomic, strong) NSString *body;
-@property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) NSString *buttonText;
 
 @end
 
