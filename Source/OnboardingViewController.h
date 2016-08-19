@@ -74,7 +74,7 @@
 /**
  * @brief Determines whether or not the page control will be visible.
  */
-@property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) IBOutlet UIPageControl *pageControl;
 
 
 /**
@@ -100,6 +100,9 @@
  */
 @property (nonatomic, strong) UIButton *lastPageRightButton;
 
+
+@property (nonatomic, strong) IBOutlet UIButton *currentLeftButton;
+@property (nonatomic, strong) IBOutlet UIButton *currentRightButton;
 
 /**
  * @brief Determines whether or not the movie player stops playing when the view disappears.

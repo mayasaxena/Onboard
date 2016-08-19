@@ -145,6 +145,12 @@ typedef void (^action_callback)(OnboardingViewController *onboardController);
 @property (nonatomic, strong) AVPlayerViewController *moviePlayerController;
 
 
+@property (nonatomic, strong) IBOutlet UIImageView *iconImageView;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *bodyLabel;
+@property (nonatomic, strong) IBOutlet UIButton *actionButton;
+
+
 /**
  * @brief Convenience class initializer for creating an onboarding content view controller.
  * @return An instance of OnboardingViewController with the provided information.

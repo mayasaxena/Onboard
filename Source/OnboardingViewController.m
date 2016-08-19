@@ -30,9 +30,6 @@ static NSString * const kSkipButtonText = @"Skip";
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) NSURL *videoURL;
 
-@property (nonatomic, strong) UIButton *currentLeftButton;
-@property (nonatomic, strong) UIButton *currentRightButton;
-
 @end
 
 
