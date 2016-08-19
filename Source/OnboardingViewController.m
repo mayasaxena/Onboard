@@ -398,16 +398,30 @@ static NSString * const kSkipButtonText = @"Skip";
 #pragma mark - Page view controller delegate
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers {
+    [self updateButtons:[pendingViewControllers containsObject:self.viewControllers.lastObject]];
+}
+
+- (void)moveNextPage {
+    NSUInteger indexOfNextPage = [self.viewControllers indexOfObject:_currentPage] + 1;
+    
+    if (indexOfNextPage < self.viewControllers.count) {
+        [self.pageVC setViewControllers:@[self.viewControllers[indexOfNextPage]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+        [self.pageControl setCurrentPage:indexOfNextPage];
+        [self updateButtons:indexOfNextPage == self.viewControllers.count - 1];
+    }
+}
+
+- (void)updateButtons:(BOOL)isLastPage {
     if (self.shouldChangeButtonsOnLastPage) {
-        if ([pendingViewControllers containsObject:self.viewControllers.lastObject ]) {
+        if (isLastPage) {
             [self.currentLeftButton removeFromSuperview];
             self.currentLeftButton = self.lastPageLeftButton;
             [self.view addSubview:self.currentLeftButton];
-
+            
             [self.currentRightButton removeFromSuperview];
             self.currentRightButton = self.lastPageRightButton;
             [self.view addSubview:self.currentRightButton];
-    
+            
         } else {
             [self.currentLeftButton removeFromSuperview];
             self.currentLeftButton = self.leftButton;
@@ -417,15 +431,6 @@ static NSString * const kSkipButtonText = @"Skip";
             self.currentRightButton = self.rightButton;
             [self.view addSubview:self.currentRightButton];
         }
-    }
-}
-
-- (void)moveNextPage {
-    NSUInteger indexOfNextPage = [self.viewControllers indexOfObject:_currentPage] + 1;
-    
-    if (indexOfNextPage < self.viewControllers.count) {
-        [self.pageVC setViewControllers:@[self.viewControllers[indexOfNextPage]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
-        [self.pageControl setCurrentPage:indexOfNextPage];
     }
 }
 
