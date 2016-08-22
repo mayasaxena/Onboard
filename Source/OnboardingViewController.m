@@ -28,7 +28,6 @@ static NSString * const kSkipButtonText = @"Skip";
 
 @property (nonatomic, strong) UIPageViewController *pageVC;
 @property (nonatomic, strong) AVPlayer *player;
-@property (nonatomic, strong) NSURL *videoURL;
 
 @end
 

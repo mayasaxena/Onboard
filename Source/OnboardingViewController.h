@@ -117,6 +117,12 @@
 
 
 /**
+ * @brief The URL for the video playing in the background
+ */
+@property (nonatomic, strong) NSURL *videoURL;
+
+
+/**
  * @brief The padding between the bottom of the screen and the bottom of the page control.
  */
 @property (nonatomic) CGFloat underPageControlPadding;
