@@ -23,9 +23,6 @@ static NSString * const kSkipButtonText = @"Skip";
 
 @interface OnboardingViewController ()
 
-@property (nonatomic, strong) OnboardingContentViewController *currentPage;
-@property (nonatomic, strong) OnboardingContentViewController *upcomingPage;
-
 @property (nonatomic, strong) UIPageViewController *pageVC;
 @property (nonatomic, strong) AVPlayer *player;
 

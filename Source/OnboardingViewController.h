@@ -128,6 +128,9 @@
 @property (nonatomic) CGFloat underPageControlPadding;
 
 
+@property (nonatomic, strong) OnboardingContentViewController *currentPage;
+@property (nonatomic, strong) OnboardingContentViewController *upcomingPage;
+
 /**
  * @brief Switches out buttons if it is the last page
  */
