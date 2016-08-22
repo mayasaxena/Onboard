@@ -162,30 +162,7 @@
 
 
 /**
- * @brief Convenience class initializer for onboarding with a backround video and custom buttons
- * @return An instance of OnboardingViewController with the provided background video, custom buttons and content view controllers.
- */
-
-+ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
-                                leftButton:(UIButton *)leftButton
-                               rightButton:(UIButton *)rightButton
-                        lastPageLeftButton:(UIButton *)lastPageLeftButton
-                       lastPageRightButton:(UIButton *)lastPageRightButton
-                                  contents:(NSArray *)contents;
-
-/**
- * @brief Convenience class initializer for onboarding with a backround video and skip, next and done buttons
- * @return An instance of OnboardingViewController with the provided background video, custom buttons and content view controllers.
- */
-
-+ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
-                                skipButton:(UIButton *)leftButton
-                                nextButton:(UIButton *)rightButton
-                                doneButton:(UIButton *)lastPageRightButton
-                                  contents:(NSArray *)contents;
-
-/**
- * @brief Initializer for onboarding with a backround video and custom buttons.
+ * @brief Initializer for onboarding with a backround image and custom buttons.
  * @return An instance of OnboardingViewController with the provided background video, custom buttons and content view controllers.
  */
 
@@ -195,6 +172,17 @@
                      lastPageLeftButton:(UIButton *)lastPageLeftButton
                     lastPageRightButton:(UIButton *)lastPageRightButton
                                contents:(NSArray *)contents;
+
+/**
+ * @brief Initializer for onboarding with a backround video and custom buttons.
+ * @return An instance of OnboardingViewController with the provided background video, custom buttons and content view controllers.
+ */
+
+- (instancetype)initWithBackgroundVideoURL:(NSURL *)backgroundVideoURL
+                                skipButton:(UIButton *)leftButton
+                                nextButton:(UIButton *)rightButton
+                                doneButton:(UIButton *)lastPageRightButton
+                                  contents:(NSArray *)contents;
 
 /**
  * @brief Method to tell the onboarding view controller to automatically move to the next page.

@@ -58,21 +58,6 @@ static NSString * const kSkipButtonText = @"Skip";
 
 #pragma mark - Initializing with custom buttons
 
-+ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
-                             leftButton:(UIButton *)leftButton
-                            rightButton:(UIButton *)rightButton
-                     lastPageLeftButton:(UIButton *)lastPageLeftButton
-                    lastPageRightButton:(UIButton *)lastPageRightButton
-                               contents:(NSArray *)contents {
-    
-    return [[self alloc] initWithBackgroundImage:backgroundImage
-                                      leftButton:leftButton
-                                     rightButton:rightButton
-                              lastPageLeftButton:lastPageLeftButton
-                             lastPageRightButton:lastPageRightButton
-                                        contents:contents];
-}
-
 - (instancetype)initWithBackgroundImage:(UIImage *)backgroundImage
                              leftButton:(UIButton *)leftButton
                             rightButton:(UIButton *)rightButton
@@ -104,25 +89,11 @@ static NSString * const kSkipButtonText = @"Skip";
     return self;
 }
 
-+ (instancetype)onboardWithBackgroundImage:(UIImage *)backgroundImage
+- (instancetype)initWithBackgroundVideoURL:(NSURL *)backgroundVideoURL
                                 skipButton:(UIButton *)leftButton
                                 nextButton:(UIButton *)rightButton
                                 doneButton:(UIButton *)lastPageRightButton
                                   contents:(NSArray *)contents {
-    
-    
-    return [[self alloc] initWithBackgroundImage:backgroundImage
-                                      skipButton:leftButton
-                                      nextButton:rightButton
-                                      doneButton:lastPageRightButton
-                                        contents:contents];
-}
-
-- (instancetype)initWithBackgroundImage:(UIImage *)backgroundImage
-                             skipButton:(UIButton *)leftButton
-                             nextButton:(UIButton *)rightButton
-                             doneButton:(UIButton *)lastPageRightButton
-                               contents:(NSArray *)contents {
     
     self = [self initWithContents:contents];
     
@@ -138,7 +109,7 @@ static NSString * const kSkipButtonText = @"Skip";
     self.shouldChangeButtonsOnLastPage = YES;
     self.shouldFadeTransitions = YES;
     
-    self.backgroundImage = backgroundImage;
+    self.videoURL = backgroundVideoURL;
     self.leftButton = leftButton;
     self.rightButton = rightButton;
     self.lastPageLeftButton = nil;
