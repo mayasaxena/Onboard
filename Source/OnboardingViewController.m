@@ -20,14 +20,11 @@ static CGFloat const kDefaultSaturationDeltaFactor = 1.8;
 
 static NSString * const kSkipButtonText = @"Skip";
 
-
 @interface OnboardingViewController ()
 
-@property (nonatomic, strong) UIPageViewController *pageVC;
 @property (nonatomic, strong) AVPlayer *player;
 
 @end
-
 
 @implementation OnboardingViewController
 
@@ -196,7 +193,7 @@ static NSString * const kSkipButtonText = @"Skip";
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
 
-    self.pageVC.view.frame = self.view.frame;
+    self.pageViewController.view.frame = self.view.frame;
     self.moviePlayerController.view.frame = self.view.frame;
     if (self.currentLeftButton) {
         
@@ -219,10 +216,10 @@ static NSString * const kSkipButtonText = @"Skip";
 
 - (void)generateView {
     // create our page view controller
-    self.pageVC = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
-    self.pageVC.view.backgroundColor = [UIColor whiteColor];
-    self.pageVC.delegate = self;
-    self.pageVC.dataSource = self.swipingEnabled ? self : nil;
+    self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+    self.pageViewController.view.backgroundColor = [UIColor whiteColor];
+    self.pageViewController.delegate = self;
+    self.pageViewController.dataSource = self.swipingEnabled ? self : nil;
     
     if (self.shouldBlurBackground) {
         [self blurBackground];
@@ -244,9 +241,9 @@ static NSString * const kSkipButtonText = @"Skip";
     // darkens it a bit for better contrast
     UIView *backgroundMaskView;
     if (self.shouldMaskBackground) {
-        backgroundMaskView = [[UIView alloc] initWithFrame:self.pageVC.view.frame];
+        backgroundMaskView = [[UIView alloc] initWithFrame:self.pageViewController.view.frame];
         backgroundMaskView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:kBackgroundMaskAlpha];
-        [self.pageVC.view addSubview:backgroundMaskView];
+        [self.pageViewController.view addSubview:backgroundMaskView];
     }
 
     // set ourself as the delegate on all of the content views, to handle fading
@@ -259,16 +256,16 @@ static NSString * const kSkipButtonText = @"Skip";
     _currentPage = [self.viewControllers firstObject];
     
     // more page controller setup
-    [self.pageVC setViewControllers:@[self.currentPage] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
-    self.pageVC.view.backgroundColor = [UIColor clearColor];
-    [self addChildViewController:self.pageVC];
-    [self.view addSubview:self.pageVC.view];
-    [self.pageVC didMoveToParentViewController:self];
-    [self.pageVC.view sendSubviewToBack:backgroundMaskView];
+    [self.pageViewController setViewControllers:@[self.currentPage] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    self.pageViewController.view.backgroundColor = [UIColor clearColor];
+    [self addChildViewController:self.pageViewController];
+    [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
+    [self.pageViewController.view sendSubviewToBack:backgroundMaskView];
     
     // send the background image view to the back if we have one
     if (backgroundImageView) {
-        [self.pageVC.view sendSubviewToBack:backgroundImageView];
+        [self.pageViewController.view sendSubviewToBack:backgroundImageView];
     }
     
     // otherwise send the video view to the back if we have one
@@ -279,8 +276,8 @@ static NSString * const kSkipButtonText = @"Skip";
         self.moviePlayerController.player = self.player;
         self.moviePlayerController.showsPlaybackControls = NO;
         
-        [self.pageVC.view addSubview:self.moviePlayerController.view];
-        [self.pageVC.view sendSubviewToBack:self.moviePlayerController.view];
+        [self.pageViewController.view addSubview:self.moviePlayerController.view];
+        [self.pageViewController.view sendSubviewToBack:self.moviePlayerController.view];
     }
     
     if (!self.pageControl) {
@@ -305,7 +302,7 @@ static NSString * const kSkipButtonText = @"Skip";
     // so we can set ourself as the delegate, this is sort of hackish but the only current
     // solution I am aware of using a page view controller
     if (self.shouldFadeTransitions) {
-        for (UIView *view in self.pageVC.view.subviews) {
+        for (UIView *view in self.pageViewController.view.subviews) {
             if ([view isKindOfClass:[UIScrollView class]]) {
                 [(UIScrollView *)view setDelegate:self];
             }
@@ -370,7 +367,7 @@ static NSString * const kSkipButtonText = @"Skip";
     NSUInteger indexOfNextPage = [self.viewControllers indexOfObject:_currentPage] + 1;
     
     if (indexOfNextPage < self.viewControllers.count) {
-        [self.pageVC setViewControllers:@[self.viewControllers[indexOfNextPage]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+        [self.pageViewController setViewControllers:@[self.viewControllers[indexOfNextPage]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
         [self.pageControl setCurrentPage:indexOfNextPage];
         [self updateButtons:indexOfNextPage == self.viewControllers.count - 1];
     }

@@ -13,6 +13,11 @@
 @interface OnboardingViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIScrollViewDelegate, OnboardingContentViewControllerDelegate>
 
 /**
+ * @brief The onboarding page view controller.
+ */
+@property (nonatomic, strong) UIPageViewController *pageViewController;
+
+/**
  * @brief The onboarding content view controllers.
  */
 @property (nonatomic, strong) NSArray *viewControllers;
